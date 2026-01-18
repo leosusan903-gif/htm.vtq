@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Giỏ hàng</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="CSS/style.css">
+<link rel="stylesheet" href="CSS/GioHang.css">
+</head>
+<body>
+    <header class="shop-header">
+  <div class="header-container">
+    <div class="logo">
+      <a href="index.html">VTQ Fashion</a>
+    </div>
+
+    <nav class="menu">
+      <a href="TrangChu.html">Trang chủ</a>
+      <a href="SanPham.html">Sản phẩm</a>
+      <a href="GioHang.html" class="active">Giỏ hàng</a>
+      <a href="LienHe.html">Liên hệ</a>
+    </nav>
+  </div>
+</header>
+<div class="breadcrumb">
+      <a href="SanPham.html"><span>Trang Sản phẩm</a></span>
+        <span>›</span>
+      <a href="#">⬅ Tiếp tục mua</a>
+  </div>
+
+<div class="page-title">
+  <h1>Giỏ hàng của bạn</h1>
+  <p>Kiểm tra sản phẩm trước khi thanh toán</p>
+</div>
+
+<table width="100%" border="1" cellpadding="10">
+<thead>
+<tr>
+  <th>Sản phẩm</th>
+  <th>Giá</th>
+  <th>Số lượng</th>
+  <th>Tổng</th>
+  <th>Xóa</th>
+</tr>
+</thead>
+<tbody id="cart-body"></tbody>
+</table>
+
+<h3 id="total-price"></h3>
+
+<a href="ThanhToan.html" class="btn btn-danger">Thanh toán</a>
+<div class="customer-box">
+  <h3>Thông tin khách hàng</h3>
+
+  <input type="text" placeholder="Họ và tên">
+  <input type="text" placeholder="Số điện thoại">
+  <input type="text" placeholder="Địa chỉ nhận hàng">
+
+  <textarea placeholder="Ghi chú cho người bán"></textarea>
+</div>
+<div class="payment-box">
+  <h3>Phương thức thanh toán</h3>
+
+  <label>
+    <input type="radio" name="pay" checked>
+    Thanh toán khi nhận hàng (COD)
+  </label><br>
+
+  <label>
+    <input type="radio" name="pay">
+    Chuyển khoản ngân hàng
+  </label>
+</div>
+
+<script>
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+function loadCart() {
+  let cart = getCart();
+  let body = document.getElementById("cart-body");
+  let total = 0;
+  body.innerHTML = "";
+
+  cart.forEach((item, i) => {
+    let sum = item.price * item.qty;
+    total += sum;
+
+    body.innerHTML += `
+    <tr>
+      <td><img src="${item.img}" width="120"  height="85"><br>${item.name}</td>
+      <td>${item.price.toLocaleString()}đ</td>
+      <td>
+        <button onclick="changeQty(${i},-1)">-</button>
+        ${item.qty}
+        <button onclick="changeQty(${i},1)">+</button>
+      </td>
+      <td>${sum.toLocaleString()}đ</td>
+      <td><button onclick="removeItem(${i})">X</button></td>
+    </tr>`;
+  });
+
+  document.getElementById("total-price").innerText =
+    "Tổng tiền: " + total.toLocaleString() + "đ";
+}
+
+function changeQty(i,n) {
+  let cart = getCart();
+  cart[i].qty += n;
+  if (cart[i].qty <= 0) cart.splice(i,1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  loadCart();
+}
+
+function removeItem(i) {
+  let cart = getCart();
+  cart.splice(i,1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  loadCart();
+}
+
+loadCart();
+</script>
+
+</body>
+</html>
